@@ -58,17 +58,18 @@ class _WineSearchPageState extends State<WineSearchPage> {
       backgroundColor: Colors.white, 
       appBar: AppBar(
         title: const Text("Search"),
-        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
         centerTitle: true,
-        backgroundColor: Colors.white, 
+        backgroundColor: Color.fromARGB(255, 107, 10, 10), 
         leading: Container(
           margin: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-            color: Colors.grey[200], 
+            color: Color.fromARGB(255, 107, 10, 10), 
             borderRadius: BorderRadius.circular(8.0), 
           ),
           child: IconButton(
             icon: const Icon(Icons.arrow_back),
+            color: Colors.white,
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -230,8 +231,8 @@ class _WineSearchPageState extends State<WineSearchPage> {
             if (itemsToShow < filteredWine.length)
               ElevatedButton.icon(
                 onPressed: loadMore,
-                icon: const Icon(Icons.add),
-                label: const Text("Load More"),
+                icon: const Icon(Icons.add, color: Colors.black,),
+                label: const Text("Load More", style: TextStyle(color: Colors.black),),
               ),
           ],
         ),
