@@ -11,6 +11,7 @@ class WineApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'GoWine',
       debugShowCheckedModeBanner: false,
       home: WineSearchPage(),
     );

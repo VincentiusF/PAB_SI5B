@@ -5,6 +5,8 @@ class Wine {
   final String price;
   final String imagePath;
   final String type;
+  final String description;
+  final double rating;
 
   Wine({
     required this.name,
@@ -12,6 +14,8 @@ class Wine {
     required this.country,
     required this.price,
     required this.imagePath,
-    required this.type
+    required this.type,
+    required this.description,
+    required this.rating
   });
 }

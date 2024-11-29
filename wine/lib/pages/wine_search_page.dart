@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wine/models/wine.dart';
 import '../data/wine_data.dart';
+import 'wine_detail_page.dart';
 
 class WineSearchPage extends StatefulWidget {
   @override
@@ -16,18 +17,21 @@ class _WineSearchPageState extends State<WineSearchPage> {
 
   List<Wine> get filteredWine {
     return wineData.where((wine) {
-      final matchesSearch =
-          searchQuery.isEmpty || wine.name.toLowerCase().contains(searchQuery.toLowerCase());
-      final matchesType = selectedType.isEmpty || wine.type.toLowerCase().contains(selectedType.toLowerCase());
+      final matchesSearch = searchQuery.isEmpty ||
+          wine.name.toLowerCase().contains(searchQuery.toLowerCase());
+      final matchesType = selectedType.isEmpty ||
+          wine.type.toLowerCase().contains(selectedType.toLowerCase());
 
       final priceInt = _parsePrice(wine.price);
       final matchesPrice = selectedPrice.isEmpty ||
           (selectedPrice == "< Rp500.000" && priceInt < 500000) ||
-          (selectedPrice == "Rp500.000 - Rp1.000.000" && priceInt >= 500000 && priceInt <= 1000000) ||
+          (selectedPrice == "Rp500.000 - Rp1.000.000" &&
+              priceInt >= 500000 &&
+              priceInt <= 1000000) ||
           (selectedPrice == "> Rp1.000.000" && priceInt > 1000000);
 
-      final matchesCountry =
-          selectedCountry.isEmpty || wine.country.toLowerCase() == selectedCountry.toLowerCase();
+      final matchesCountry = selectedCountry.isEmpty ||
+          wine.country.toLowerCase() == selectedCountry.toLowerCase();
 
       return matchesSearch && matchesType && matchesPrice && matchesCountry;
     }).toList();
@@ -52,13 +56,23 @@ class _WineSearchPageState extends State<WineSearchPage> {
     });
   }
 
+  void navigateToDetail(Wine wine) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WineDetailScreen(wine: wine),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Search"),
-        titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
+        titleTextStyle: const TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 107, 10, 10),
         leading: Container(
@@ -85,7 +99,12 @@ class _WineSearchPageState extends State<WineSearchPage> {
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 218, 211, 211),
                 borderRadius: BorderRadius.circular(8.0),
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.9), spreadRadius: 2, blurRadius: 5)],
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey.withOpacity(0.9),
+                      spreadRadius: 2,
+                      blurRadius: 5)
+                ],
               ),
               child: TextField(
                 onChanged: (value) {
@@ -97,22 +116,26 @@ class _WineSearchPageState extends State<WineSearchPage> {
                   hintText: "Cari wine",
                   prefixIcon: const Icon(Icons.search),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 12.0),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildDropdownButton("Jenis Wine", ["Red", "White", "Sparkling"], selectedType, (value) {
+                _buildDropdownButton(
+                    "Jenis Wine", ["Red", "White", "Sparkling"], selectedType,
+                    (value) {
                   setState(() {
                     selectedType = value ?? "";
                   });
                 }),
                 const SizedBox(width: 8),
-                _buildDropdownButton("Harga", ["< Rp500.000", "Rp500.000 - Rp1.000.000", "> Rp1.000.000"],
+                _buildDropdownButton(
+                    "Harga",
+                    ["< Rp500.000", "Rp500.000 - Rp1.000.000", "> Rp1.000.000"],
                     selectedPrice, (value) {
                   setState(() {
                     selectedPrice = value ?? "";
@@ -120,7 +143,9 @@ class _WineSearchPageState extends State<WineSearchPage> {
                 }),
                 const SizedBox(width: 8),
                 _buildDropdownButton(
-                    "Negara", ["Chile", "Argentina", "Australia", "Italy", "France"], selectedCountry, (value) {
+                    "Negara",
+                    ["Chile", "Argentina", "Australia", "Italy", "France"],
+                    selectedCountry, (value) {
                   setState(() {
                     selectedCountry = value ?? "";
                   });
@@ -128,8 +153,9 @@ class _WineSearchPageState extends State<WineSearchPage> {
               ],
             ),
             const SizedBox(height: 16),
-
-            if (selectedType.isNotEmpty || selectedPrice.isNotEmpty || selectedCountry.isNotEmpty)
+            if (selectedType.isNotEmpty ||
+                selectedPrice.isNotEmpty ||
+                selectedCountry.isNotEmpty)
               Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -167,12 +193,12 @@ class _WineSearchPageState extends State<WineSearchPage> {
                 ],
               ),
             const SizedBox(height: 16),
-
             Expanded(
               child: filteredWine.isEmpty
                   ? Center(child: Text("No results found"))
                   : GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 20,
                         mainAxisSpacing: 20,
@@ -181,67 +207,73 @@ class _WineSearchPageState extends State<WineSearchPage> {
                       itemCount: itemsToShow.clamp(0, filteredWine.length),
                       itemBuilder: (context, index) {
                         final wine = filteredWine[index];
-                        return Card(
-                          elevation: 10,
-                          shadowColor: Colors.black45,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(wine.imagePath),
-                                      fit: BoxFit.fill,
+                        return GestureDetector(
+                          onTap: () => navigateToDetail(wine),
+                          child: Card(
+                            elevation: 10,
+                            shadowColor: Colors.black45,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(wine.imagePath),
+                                        fit: BoxFit.fill,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(wine.name, style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text("${wine.region}, ${wine.country}"),
-                                    Text("${wine.type}"),
-                                    Text("Rp${wine.price}", style: TextStyle(color: Colors.red)),
-                                    const SizedBox(height: 8),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Anda membeli ${wine.name}')),
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                        textStyle: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: 16,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(wine.name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      Text("${wine.region}, ${wine.country}"),
+                                      Text("${wine.type}"),
+                                      Text("Rp${wine.price}",
+                                          style: TextStyle(color: Colors.red)),
+                                      const SizedBox(height: 8),
+                                      ElevatedButton(
+                                        onPressed: () {},
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 8),
+                                          textStyle: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                          ),
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 107, 10, 10),
                                         ),
-                                        backgroundColor: const Color.fromARGB(255, 107, 10, 10),
-                                      ),
-                                      child: Container(
-                                        width: double.infinity,
-                                        child: Center(
-                                          child: Text(
-                                            "Beli",
-                                            style: TextStyle(color: Colors.white),
+                                        child: Container(
+                                          width: double.infinity,
+                                          child: Center(
+                                            child: Text(
+                                              "Beli",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                  ],
+                                      const SizedBox(height: 16),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -251,7 +283,8 @@ class _WineSearchPageState extends State<WineSearchPage> {
               ElevatedButton.icon(
                 onPressed: loadMore,
                 icon: const Icon(Icons.add, color: Colors.black),
-                label: const Text("Load More", style: TextStyle(color: Colors.black)),
+                label: const Text("Load More",
+                    style: TextStyle(color: Colors.black)),
               ),
           ],
         ),
@@ -259,7 +292,8 @@ class _WineSearchPageState extends State<WineSearchPage> {
     );
   }
 
-  Widget _buildDropdownButton(String hint, List<String> items, String selectedValue, Function(String?) onChanged) {
+  Widget _buildDropdownButton(String hint, List<String> items,
+      String selectedValue, Function(String?) onChanged) {
     return Expanded(
       child: Container(
         decoration: BoxDecoration(
