@@ -14,11 +14,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _screenOptions = <Widget>[
+  static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
     SearchScreen(),
     FavoriteScreen(),
-    ProfileScreen()
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -30,25 +30,31 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screenOptions.elementAt(_selectedIndex),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          //item pertama
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          //item kedua
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          //item ketiga
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite), label: 'Favorite'),
-          //item keempat
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorite',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
         currentIndex: _selectedIndex,
+        selectedItemColor: Colors.brown,
+        unselectedItemColor: Colors.brown.shade200,
         onTap: _onItemTapped,
-        showSelectedLabels: true,
         showUnselectedLabels: true,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.deepPurple.shade200,
       ),
     );
   }
